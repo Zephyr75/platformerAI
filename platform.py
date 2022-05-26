@@ -16,8 +16,8 @@ class Platform(pygame.sprite.Sprite):
             center=(x, y)
         )
 
-    def update(self, pressed_keys, player, blocks):
-        if pressed_keys[K_LEFT] and not player.top_left(blocks) and not player.left(blocks):
-            self.rect.move_ip(3, 0)
-        if pressed_keys[K_RIGHT] and not player.top_right(blocks) and not player.right(blocks):
-            self.rect.move_ip(-3, 0)
+    def update(self, left, right):
+        if left:
+            self.rect.move_ip(5, 0)
+        if right:
+            self.rect.move_ip(-5, 0)

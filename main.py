@@ -36,13 +36,16 @@ all_sprites.add(player)
 clock = pygame.time.Clock()
 
 
-def load_chunk(offset):
+def load_chunk(offset, first):
     rand = random.randint(0, 4)
     next_chunk = []
     if rand == 0:
         next_chunk = ground
     elif rand == 1:
-        next_chunk = hole
+        if first:
+            next_chunk = ground
+        else:
+            next_chunk = hole
     elif rand == 2:
         next_chunk = stairs
     else:
@@ -64,12 +67,27 @@ def load_chunk(offset):
                 platforms.add(platform_placed)
 
 
-load_chunk(32)
-load_chunk(32+32*5)
-load_chunk(32+32*10)
-load_chunk(32+32*15)
-load_chunk(32+32*20)
-load_chunk(32+32*25)
+load_chunk(32, True)
+load_chunk(32+32*5, False)
+load_chunk(32+32*10, False)
+load_chunk(32+32*15, False)
+load_chunk(32+32*20, False)
+load_chunk(32+32*25, False)
+load_chunk(32+32*30, False)
+load_chunk(32+32*35, False)
+load_chunk(32+32*40, False)
+load_chunk(32+32*45, False)
+load_chunk(32+32*50, False)
+load_chunk(32+32*55, False)
+load_chunk(32+32*60, False)
+load_chunk(32+32*65, False)
+load_chunk(32+32*70, False)
+load_chunk(32+32*75, False)
+load_chunk(32+32*80, False)
+load_chunk(32+32*85, False)
+load_chunk(32+32*90, False)
+load_chunk(32+32*95, False)
+load_chunk(32+32*100, False)
 
 top_right_collision = False
 bottom_right_collision = False
@@ -91,7 +109,10 @@ while running:
     pressed_keys = pygame.key.get_pressed()
     player.update(pressed_keys, platforms, screen)
     enemies.update()
-    platforms.update(pressed_keys, player, platforms)
+
+    left = pressed_keys[K_LEFT] and not player.top_left(platforms) and not player.left(platforms)
+    right = pressed_keys[K_RIGHT] and not player.top_right(platforms) and not player.right(platforms)
+    platforms.update(left, right)
 
     screen.fill(black)
 
