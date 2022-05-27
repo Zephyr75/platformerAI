@@ -6,9 +6,9 @@ from colors import white
 from constants import SCREEN_WIDTH
 
 
-class Platform(pygame.sprite.Sprite):
+class Brick(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
-        super(Platform, self).__init__()
+        super(Brick, self).__init__()
         self.image = pygame.image.load(image).convert()
         self.image.set_colorkey(white, RLEACCEL)
         self.image = pygame.transform.scale(self.image, (32, 32))

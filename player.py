@@ -19,11 +19,11 @@ class Player(pygame.sprite.Sprite):
         )
 
     def top_right(self, blocks):
-        col = Collider(self.rect.centerx + 8, self.rect.centery - 16)
+        col = Collider(self.rect.centerx + 8, self.rect.centery - 12)
         return pygame.sprite.spritecollideany(col, blocks)
 
     def top_left(self, blocks):
-        col = Collider(self.rect.centerx - 8, self.rect.centery - 16)
+        col = Collider(self.rect.centerx - 8, self.rect.centery - 12)
         return pygame.sprite.spritecollideany(col, blocks)
 
     def bottom_right(self, blocks):

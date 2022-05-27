@@ -9,14 +9,14 @@ from pygame.locals import (
     QUIT,
 )
 
+from brick import Brick
 from collider import Collider
 from colors import black, grey
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 import random
 
 from enemy import Enemy
-from map import ground, hole, platform, stairs
-from platform import Platform
+from map import ground, hole, stairs_up, stairs_down, trap_up, trap_down, floating
 from player import Player
 
 pygame.init()
@@ -37,57 +37,46 @@ clock = pygame.time.Clock()
 
 
 def load_chunk(offset, first):
-    rand = random.randint(0, 4)
+    rand = random.randint(0, 7)
     next_chunk = []
-    if rand == 0:
+    if first:
+        next_chunk = ground
+    elif rand == 0:
         next_chunk = ground
     elif rand == 1:
-        if first:
-            next_chunk = ground
-        else:
-            next_chunk = hole
+        next_chunk = hole
     elif rand == 2:
-        next_chunk = stairs
+        next_chunk = stairs_up
+    elif rand == 3:
+        next_chunk = stairs_down
+    elif rand == 4:
+        next_chunk = floating
+    elif rand == 5:
+        next_chunk = trap_up
     else:
-        next_chunk = platform
-    for i in range(10):
-        for j in range(5):
+        next_chunk = trap_down
+
+    for i in range(5):
+        for j in range(3):
             print(i, j)
             if next_chunk[i][j] == 1:
-                ground_placed = Platform(offset + j * 32, i * 32, "ground.png")
+                ground_placed = Brick(offset + j * 32, 160 + i * 32, "ground.png")
                 all_sprites.add(ground_placed)
                 platforms.add(ground_placed)
             elif next_chunk[i][j] == 2:
-                bottom_placed = Platform(offset + j * 32, i * 32, "bottomGround.png")
+                bottom_placed = Brick(offset + j * 32, 160 + i * 32, "bottomGround.png")
                 all_sprites.add(bottom_placed)
                 platforms.add(bottom_placed)
             elif next_chunk[i][j] == 3:
-                platform_placed = Platform(offset + j * 32, i * 32, "platform.png")
+                platform_placed = Brick(offset + j * 32, 160 + i * 32, "platform.png")
                 all_sprites.add(platform_placed)
                 platforms.add(platform_placed)
 
 
 load_chunk(32, True)
-load_chunk(32+32*5, False)
-load_chunk(32+32*10, False)
-load_chunk(32+32*15, False)
-load_chunk(32+32*20, False)
-load_chunk(32+32*25, False)
-load_chunk(32+32*30, False)
-load_chunk(32+32*35, False)
-load_chunk(32+32*40, False)
-load_chunk(32+32*45, False)
-load_chunk(32+32*50, False)
-load_chunk(32+32*55, False)
-load_chunk(32+32*60, False)
-load_chunk(32+32*65, False)
-load_chunk(32+32*70, False)
-load_chunk(32+32*75, False)
-load_chunk(32+32*80, False)
-load_chunk(32+32*85, False)
-load_chunk(32+32*90, False)
-load_chunk(32+32*95, False)
-load_chunk(32+32*100, False)
+
+for i in range(100):
+    load_chunk(32 + 32 * i * 3, False)
 
 top_right_collision = False
 bottom_right_collision = False
