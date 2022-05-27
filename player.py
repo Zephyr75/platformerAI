@@ -42,10 +42,7 @@ class Player(pygame.sprite.Sprite):
         col = Collider(self.rect.centerx - 16, self.rect.centery)
         return pygame.sprite.spritecollideany(col, blocks)
 
-    def update(self, pressed_keys, blocks, screen):
-        col = Collider(self.rect.centerx - 16, self.rect.centery)
-        screen.blit(col.image, col.rect)
-
+    def update(self, up, blocks, screen):
         top_right = self.top_right(blocks)
         bottom_right = self.bottom_right(blocks)
         top_left = self.top_left(blocks)
@@ -58,8 +55,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.move_ip(0, - self.jump / 10)
         if top_right or top_left:
             self.jump = 0
-        if pressed_keys[K_UP] and (bottom_left or bottom_right):
-            self.jump = 100
+        if up:
+            self.jump = 80
         if self.rect.centery >= SCREEN_HEIGHT:
             exit(0)
 

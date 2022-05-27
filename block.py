@@ -6,9 +6,9 @@ from colors import white
 from constants import SCREEN_WIDTH
 
 
-class Brick(pygame.sprite.Sprite):
+class Block(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
-        super(Brick, self).__init__()
+        super(Block, self).__init__()
         self.image = pygame.image.load(image).convert()
         self.image.set_colorkey(white, RLEACCEL)
         self.image = pygame.transform.scale(self.image, (32, 32))
@@ -16,8 +16,6 @@ class Brick(pygame.sprite.Sprite):
             center=(x, y)
         )
 
-    def update(self, left, right):
-        if left:
-            self.rect.move_ip(5, 0)
+    def update(self, right):
         if right:
             self.rect.move_ip(-5, 0)
