@@ -18,4 +18,4 @@ class Block(pygame.sprite.Sprite):
 
     def update(self, right):
         if right:
-            self.rect.move_ip(-5, 0)
+            self.rect.move_ip(-1, 0)

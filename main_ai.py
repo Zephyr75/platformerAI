@@ -62,16 +62,18 @@ for k in range(100):
 
 
 def eval_genomes(genomes, config):
+    print(population.generation)
+    global ge, networks,players
     clock = pygame.time.Clock()
-    genomes = []
+    ge = []
     networks = []
     players = []
 
-    print("aaaa")
     for genome_id, genome in genomes:
-        players.append(Player())
-        print("duh")
-        genomes.append(genome)
+        player = Player()
+        players.append(player)
+        all_sprites.add(player)
+        ge.append(genome)
         network = neat.nn.FeedForwardNetwork.create(genome, config)
         networks.append(network)
         genome.fitness = 0
@@ -99,14 +101,15 @@ def eval_genomes(genomes, config):
             up = False
             right = False
             if output[0] > .5:
-                up = True
+                up = player.bottom_left(blocks) or player.bottom_right(blocks)
             if output[1] > .5:
-                right = True
+                right = not player.top_right(blocks) and not player.right(blocks)
             player.update(up, blocks, screen)
             if player.rect.centery >= SCREEN_HEIGHT:
-                genomes[i].fitness -= 1
-                genomes.pop(i)
+                ge[i].fitness -= 1
+                ge.pop(i)
                 networks.pop(i)
+                players.pop(i)
             blocks.update(right)
 
         # Update visuals
@@ -119,7 +122,7 @@ def eval_genomes(genomes, config):
 
 
 def run(path):
-    global pop
+    global population
     config = neat.config.Config(
         neat.DefaultGenome,
         neat.DefaultReproduction,
@@ -128,8 +131,8 @@ def run(path):
         path
     )
 
-    pop = neat.Population(config)
-    pop.run(eval_genomes, 50)
+    population = neat.Population(config)
+    population.run(eval_genomes, 50)
 
 
 local_dir = os.path.dirname(__file__)

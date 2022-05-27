@@ -57,6 +57,4 @@ class Player(pygame.sprite.Sprite):
             self.jump = 0
         if up:
             self.jump = 80
-        if self.rect.centery >= SCREEN_HEIGHT:
-            exit(0)
 
