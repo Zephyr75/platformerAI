@@ -1,8 +1,10 @@
 import os
 import sys
+from math import ceil
 
 import pygame
 from pygame.locals import (
+    K_SPACE,
     K_UP,
     K_RIGHT,
     K_ESCAPE,
@@ -18,9 +20,6 @@ import neat
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-blocks = pygame.sprite.Group()
-all_sprites = pygame.sprite.Group()
 
 
 def load_chunk(offset, first):
@@ -45,34 +44,43 @@ def load_chunk(offset, first):
                 ground_placed = Block(offset + j * 32, 160 + i * 32, "ground.png")
                 all_sprites.add(ground_placed)
                 blocks.add(ground_placed)
+                all_blocks.append(1)
             elif next_chunk[i][j] == 2:
                 bottom_placed = Block(offset + j * 32, 160 + i * 32, "bottomGround.png")
                 all_sprites.add(bottom_placed)
                 blocks.add(bottom_placed)
+                all_blocks.append(1)
             elif next_chunk[i][j] == 3:
                 platform_placed = Block(offset + j * 32, 160 + i * 32, "platform.png")
                 all_sprites.add(platform_placed)
                 blocks.add(platform_placed)
-
-
-# Load map
-load_chunk(32, True)
-for k in range(100):
-    load_chunk(32 + 32 * k * 3, False)
+                all_blocks.append(1)
+            else:
+                all_blocks.append(0)
 
 
 def eval_genomes(genomes, config):
     print(population.generation)
-    global ge, networks,players
+    global ge, networks,players, all_blocks, all_sprites, blocks
     clock = pygame.time.Clock()
     ge = []
     networks = []
     players = []
+    distance = 5
+    all_blocks = []
+    blocks = pygame.sprite.Group()
+    all_sprites = pygame.sprite.Group()
+    max_time = 100 + population.generation * 10
+    framerate = 90
+
+    # Load map
+    load_chunk(64, True)
+    for k in range(200):
+        load_chunk(64 + 32 * k * 3, False)
 
     for genome_id, genome in genomes:
         player = Player()
         players.append(player)
-        all_sprites.add(player)
         ge.append(genome)
         network = neat.nn.FeedForwardNetwork.create(genome, config)
         networks.append(network)
@@ -89,23 +97,31 @@ def eval_genomes(genomes, config):
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
+                if event.key == K_SPACE:
+                    if framerate == 90:
+                        framerate = 15
+                    else:
+                        framerate = 90
 
         # Set background
         screen.fill(black)
 
         # Compute AI inputs
         for i, player in enumerate(players):
-            output = networks[i].activate(
-                (player.rect.centerx, player.rect.centery)  # TODO actual inputs
-            )
+            inputs = [distance, player.rect.centery]
+            for b in range(15):
+                inputs.append(all_blocks[b + ceil(distance)])
+            output = networks[i].activate(inputs)
             up = False
             right = False
             if output[0] > .5:
                 up = player.bottom_left(blocks) or player.bottom_right(blocks)
             if output[1] > .5:
                 right = not player.top_right(blocks) and not player.right(blocks)
+            if right:
+                distance += 1/32
             player.update(up, blocks, screen)
-            if player.rect.centery >= SCREEN_HEIGHT:
+            if player.rect.centery >= SCREEN_HEIGHT or player.right(blocks):
                 ge[i].fitness -= 1
                 ge.pop(i)
                 networks.pop(i)
@@ -115,10 +131,16 @@ def eval_genomes(genomes, config):
         # Update visuals
         for entity in all_sprites:
             screen.blit(entity.image, entity.rect)
+        for player in players:
+            screen.blit(player.image, player.rect)
         pygame.display.flip()
 
         # Define framerate
-        clock.tick(30)
+        clock.tick(framerate)
+        max_time -= 1
+
+        if len(players) == 0 or max_time == 0:
+            break
 
 
 def run(path):

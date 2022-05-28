@@ -19,11 +19,11 @@ class Player(pygame.sprite.Sprite):
         )
 
     def top_right(self, blocks):
-        col = Collider(self.rect.centerx + 8, self.rect.centery - 12)
+        col = Collider(self.rect.centerx + 8, self.rect.centery - 8)
         return pygame.sprite.spritecollideany(col, blocks)
 
     def top_left(self, blocks):
-        col = Collider(self.rect.centerx - 8, self.rect.centery - 12)
+        col = Collider(self.rect.centerx - 8, self.rect.centery - 8)
         return pygame.sprite.spritecollideany(col, blocks)
 
     def bottom_right(self, blocks):
@@ -47,9 +47,19 @@ class Player(pygame.sprite.Sprite):
         bottom_right = self.bottom_right(blocks)
         top_left = self.top_left(blocks)
         bottom_left = self.bottom_left(blocks)
+        right = self.right(blocks)
 
         if not bottom_left and not bottom_right and self.jump <= 0:
-            self.rect.move_ip(0, 5)
+            if not bottom_left and not bottom_right and self.jump <= 0:
+                self.rect.move_ip(0, 1)
+            if not bottom_left and not bottom_right and self.jump <= 0:
+                self.rect.move_ip(0, 1)
+            if not bottom_left and not bottom_right and self.jump <= 0:
+                self.rect.move_ip(0, 1)
+            if not bottom_left and not bottom_right and self.jump <= 0:
+                self.rect.move_ip(0, 1)
+            if not bottom_left and not bottom_right and self.jump <= 0:
+                self.rect.move_ip(0, 1)
         if not top_right and not top_left and self.jump > 0:
             self.jump -= 5
             self.rect.move_ip(0, - self.jump / 10)
