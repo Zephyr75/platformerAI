@@ -8,6 +8,7 @@ from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 
 class Player(pygame.sprite.Sprite):
     jump = 0
+    life = 100
 
     def __init__(self):
         super(Player, self).__init__()
