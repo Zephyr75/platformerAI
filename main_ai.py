@@ -24,7 +24,7 @@ max_array = []
 full_speed = 300
 
 def load_chunk(offset, first):
-    rand = 2 #random.randint(0, 7)
+    rand = random.randint(0, 3)
     if first:
         next_chunk = ground
     elif rand == 0:
@@ -75,7 +75,7 @@ def eval_genomes(genomes, config):
 
     # Load map
     load_chunk(64, True)
-    for k in range(200):
+    for k in range(1000):
         load_chunk(64 + 32 * k * 3, False)
 
     for genome_id, genome in genomes:
@@ -129,7 +129,7 @@ def eval_genomes(genomes, config):
             else:
                 player.life -= 1
             player.update(up, blocks, screen)
-            if player.rect.centery >= SCREEN_HEIGHT or player.right(blocks)or player.life <= 0:
+            if player.rect.centery >= SCREEN_HEIGHT or player.right(blocks) or player.life <= 0:
                 ge[i].fitness -= 1
                 ge.pop(i)
                 networks.pop(i)
@@ -172,3 +172,8 @@ def run(path):
 local_dir = os.path.dirname(__file__)
 config_path = os.path.join(local_dir, 'config.txt')
 run(config_path)
+
+plt.plot(max_array)
+plt.show()
+pygame.quit()
+sys.exit()
